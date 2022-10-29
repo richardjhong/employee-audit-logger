@@ -1,5 +1,5 @@
 const roles = require('express').Router();
-const db = require("../../config/connection");
+const db = require("../config/connection");
 
 // Get all roles
 roles.get('/', (req, res) => {
