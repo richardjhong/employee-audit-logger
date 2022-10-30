@@ -1,6 +1,6 @@
 const express = require('express');
 const inquirer = require('inquirer');
-const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole } = require('./utils/menuFunctions')
+const handleAnswers = require('./utils/answerHandling')
 const db = require('./config/connection')
 
 const PORT = process.env.PORT || 3001;
@@ -11,14 +11,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const promptUser = async () => {
+  /*
+  for each inquirer question that uses list input, the choices array is 
+  dynamically generated at the start of each inquirer prompt
+
+  after user selects from an inquirer list question, the 
+  all_____ consts hold information regarding the id of the original
+  retrieved row within a table */
   const allDepartments = await db.promise().query('SELECT id, name AS title FROM department')
   const departmentTitles = allDepartments[0].map(textRow => textRow.title)
   const allRoles = await db.promise().query('SELECT id, title FROM role')
   const roleTitles = allRoles[0].map(textRow => textRow.title)
   const allManagers = await db.promise().query(`SELECT  M.id, M.first_name, M.last_name, CONCAT(M.first_name, ' ', M.last_name) AS Manager FROM employee E LEFT JOIN employee M on M.id = E.manager_id`)
-  const managerNames = allManagers[0].filter(manager => manager.Manager !== null).map(manager => manager.Manager)
+  const managerNames = [...new Set(allManagers[0].filter(manager => manager.Manager !== null).map(manager => manager.Manager))]
   const allEmployees = await db.promise().query(`SELECT id, role_id, CONCAT(first_name, ' ', last_name) AS full_name FROM employee`)
-  const employeeFullNames = allEmployees[0].map(textRow => [textRow.id, textRow.full_name].join('.'))
+  const employeeFullNames = allEmployees[0].map(textRow => [textRow.id, textRow.full_name].join('. '))
 
   return inquirer.prompt([
     {
@@ -62,7 +69,7 @@ const promptUser = async () => {
     },
     {
       type: 'list',
-      message: 'Please select the department',
+      message: 'Please select the department.',
       name: 'roleDepartment',
       choices: departmentTitles,
       when(answers) {
@@ -122,68 +129,8 @@ const promptUser = async () => {
       }
     }
   ]).then(({ menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole }) => {
-    switch (menuOption) {
-      case 'View departments':
-        getDepartments()
-        promptUser();
-        break;
-
-      case 'Add a department':
-        createDepartment(departmentName)
-        promptUser();
-        break;
-
-      case 'View roles':
-        getRoles()
-        promptUser();
-        break;
-
-      case 'Add a role':
-        const filtered = allDepartments[0].filter(individualRow => individualRow.title === roleDepartment)
-        const departmentId = filtered[0].id
-
-        createRole(roleTitle, roleSalary, departmentId)
-        promptUser();
-        break;
-
-      case 'View employees':
-        getEmployees()
-        promptUser();
-        break;
-
-      case 'Add an employee':
-        const filteredRole = allRoles[0].filter(individualRow => individualRow.title === employeeRole)
-        const roleId = filteredRole[0].id
-        let managerId = '';
-
-        if (employeeManager === 'None') {
-          managerId = null
-        } else {
-          const [tempFirstName, tempLastName] = employeeManager.split(' ')
-          const filteredManager = allManagers[0].filter(individualRow => individualRow.first_name === tempFirstName && individualRow.last_name === tempLastName)
-          managerId = filteredManager[0].id
-
-        }
-       createEmployee(employeeFirstName, employeeLastName, roleId, managerId)
-       promptUser()
-       break;
-
-      case 'Update an employee\'s role':
-        const filteredUpdatedRole = allRoles[0].filter(individualRow => individualRow.title === employeeNewRole)
-        const updatedRoleId = filteredUpdatedRole[0].id
-        const employeeId = employeeToUpdate.split('.')[0]
-        updateEmployeeRole(updatedRoleId, employeeId)
-        promptUser()
-        break;
-      
-      case 'Exit':
-        console.log('Goodbye')
-        process.exit(0)
-
-      default:
-        console.log('using default of switch statement')
-        return;
-    }
+    handleAnswers(menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, allDepartments, allManagers, allRoles)
+    promptUser();
   })
 }
 
@@ -191,6 +138,33 @@ app.use((req, res) => {
   res.status(404).end();
 });
 
-app.listen(PORT, () => {})
+app.listen(PORT, () => {
+  console.log(`
+    
+ ____________________________________________________________
+|                                                            |
+|                                                            |
+|    ______                 _                                |                    
+|   |  ____|               | |                               |                
+|   | |__   _ __ ___  _ __ | | ___  _   _  ___  ___          |
+|   |  __| | '_ \` _ \\| '_ \\| |/ _ \\| | | |/ _ \\/ _ \\         |
+|   | |____| | | | | | |_) | | (_) | |_| |  __/  __/         |
+|   |______|_| |_| |_| .__/|_|\\___/ \\__, |\\___|\\___|         |
+|                    | |            __/ |                    |
+|                    |_|           |____|                    |
+|                                                            |
+|                                                            |
+|   |\\    /|                                                 |
+|   | \\  / | __ _ _ __   __ _  __ _  ___ _ __                |    
+|   | |\\/| |/ _\` | '_ \\ / _\` |/ _\` |/ _ \\ '__|               |   
+|   | |  | | (_| | | | | (_| | (_| |  __/ |                  |
+|   |_|  |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|                  |  
+|                             __/ /                          |
+|                            |___/                           |        
+|                                                            |
+|____________________________________________________________|
+                           `)
+})
+
 
 promptUser()
