@@ -8,7 +8,7 @@
 This app takes user input via CLI (command line interface) commands and can interact, update, and add employees to an SQL database.
 
 ## Technologies
-This app is built with [Node.js](https://nodejs.org/en/), [Inquirer](https://www.npmjs.com/package/inquirer) (version 8.2.4), [Express](https://expressjs.com/) (version 4.18.2), [mysql2](https://www.npmjs.com/package/mysql2), and [console.table](https://www.npmjs.com/package/console.table).
+This app is built with [Node.js](https://nodejs.org/en/), [Inquirer](https://www.npmjs.com/package/inquirer) (version 8.2.4), [Express](https://expressjs.com/) (version 4.18.2), [mysql2](https://www.npmjs.com/package/mysql2) (version 2.2.5), and [console.table](https://www.npmjs.com/package/console.table) (version 0.10.0).
 
 
 ## Table of Contents
