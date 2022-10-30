@@ -14,7 +14,7 @@ const promptUser = async () => {
   /*
   for each inquirer question that uses list input, the choices array is 
   dynamically generated at the start of each inquirer prompt
-
+  -----
   after user selects from an inquirer list question, the 
   all_____ consts hold information regarding the id of the original
   retrieved row within a table */
@@ -40,6 +40,7 @@ const promptUser = async () => {
         'View employees',
         'Add an employee',
         'Update an employee\'s role',
+        'View budget of a department',
         'Exit'
       ]
     },
@@ -127,9 +128,18 @@ const promptUser = async () => {
       when(answers) {
         return answers.menuOption === 'Update an employee\'s role'
       }
+    },
+    {
+      type: 'list',
+      message: 'Please select a department to calculate the budget for.',
+      name: 'departmentBudgetTitle',
+      choices: departmentTitles,
+      when(answers) {
+        return answers.menuOption === 'View budget of a department'
+      }
     }
-  ]).then(({ menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole }) => {
-    handleAnswers(menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, allDepartments, allManagers, allRoles)
+  ]).then((answers) => {
+    handleAnswers(answers, allDepartments, allManagers, allRoles)
     promptUser();
   })
 }

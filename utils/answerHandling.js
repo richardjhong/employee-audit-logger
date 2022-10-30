@@ -1,6 +1,7 @@
-const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole } = require('./menuFunctions')
+const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, viewDepartmentBudget } = require('./menuFunctions')
 
-const handleAnswers = (menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, allDepartments, allManagers, allRoles) => {
+const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
+  const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle } = answers
   switch (menuOption) {
     case 'View departments':
       getDepartments()
@@ -56,6 +57,14 @@ const handleAnswers = (menuOption, departmentName, roleTitle, roleSalary, roleDe
       const updatedRoleId = filteredUpdatedRole[0].id
       const employeeId = employeeToUpdate.split('.')[0]
       updateEmployeeRole(updatedRoleId, employeeId)
+      break;
+
+    // finds the department id matching that of the department name and 
+    // passes to viewDepartmentBudget
+    case 'View budget of a department':
+      const filteredDepartmentBudgetTitle = allDepartments[0].filter(individualRow => individualRow.title === departmentBudgetTitle)
+      const budgetDepartmentId = filteredDepartmentBudgetTitle[0].id
+      viewDepartmentBudget(budgetDepartmentId)
       break;
     
     case 'Exit':

@@ -4,9 +4,9 @@ const cTable = require('console.table');
 
 // Get all departments
 const getDepartments = () => {
-  const sqlQuery = `SELECT id, name AS title 
+  const sql = `SELECT id, name AS title 
                     FROM department`;
-  db.promise().query(sqlQuery)
+  db.promise().query(sql)
     .then( ([rows, fields]) => {
       console.log('\n')
       console.table(rows)
@@ -104,6 +104,20 @@ const updateEmployeeRole = (role_id, employee_id) => {
   });
 }
 
+// Get sum of all salaries of matching department id
+const viewDepartmentBudget = (departmentId) => {
+  const sql = `SELECT SUM(salary) as Budget
+               FROM role
+               WHERE department_id = ${departmentId}
+              `
+  const params = [departmentId]
+  db.promise().query(sql)
+    .then( ([rows, fields]) => {
+      console.log('\n')
+      console.table(rows)
+    })
+    .catch(console.log)
+}
 
 module.exports = {
   getDepartments,
@@ -112,5 +126,6 @@ module.exports = {
   createRole,
   getEmployees,
   createEmployee,
-  updateEmployeeRole
+  updateEmployeeRole,
+  viewDepartmentBudget
 };
