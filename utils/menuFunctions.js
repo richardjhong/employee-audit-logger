@@ -29,6 +29,7 @@ const createDepartment = (name) => {
   });
 }
 
+// Get all roles
 const getRoles = () => {
   const sqlQuery = `SELECT role.id, department.name AS department, 
                     title, salary 
@@ -42,6 +43,7 @@ const getRoles = () => {
     .catch(console.log)
 }
 
+// Create a role
 const createRole = (title, salary, departmentId) => {
   const sql = `INSERT INTO role (title, salary, department_id)
     VALUES (?, ?, ?)`;
@@ -56,6 +58,7 @@ const createRole = (title, salary, departmentId) => {
   });
 }
 
+// Get all employees
 const getEmployees = () => {
   const sqlQuery = `SELECT
                     E.id, E.first_name, E.last_name, role.title, department.name AS department, role.salary, CONCAT(M.first_name, ' ', M.last_name) AS manager
@@ -73,6 +76,7 @@ const getEmployees = () => {
     .catch(console.log)
 }
 
+// Create an employee
 const createEmployee = (first_name, last_name, role_id, manager_id) => {
   const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
     VALUES (?, ?, ?, ?)`;
@@ -87,11 +91,26 @@ const createEmployee = (first_name, last_name, role_id, manager_id) => {
   });
 }
 
+// Update an employee's role
+const updateEmployeeRole = (role_id, employee_id) => {
+  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
+  const params = [role_id, employee_id]
+  db.promise().query(sql, params, (err, result) => {
+    if (err) {
+      console.log(err)
+      return;
+    }
+    console.log(`Employee role updated.`)
+  });
+}
+
+
 module.exports = {
   getDepartments,
   createDepartment,
   getRoles,
   createRole,
   getEmployees,
-  createEmployee
+  createEmployee,
+  updateEmployeeRole
 };

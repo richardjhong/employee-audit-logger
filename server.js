@@ -1,6 +1,6 @@
 const express = require('express');
 const inquirer = require('inquirer');
-const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee } = require('./utils/departmentFunctions')
+const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole } = require('./utils/menuFunctions')
 const db = require('./config/connection')
 
 const PORT = process.env.PORT || 3001;
@@ -17,6 +17,8 @@ const promptUser = async () => {
   const roleTitles = allRoles[0].map(textRow => textRow.title)
   const allManagers = await db.promise().query(`SELECT  M.id, M.first_name, M.last_name, CONCAT(M.first_name, ' ', M.last_name) AS Manager FROM employee E LEFT JOIN employee M on M.id = E.manager_id`)
   const managerNames = allManagers[0].filter(manager => manager.Manager !== null).map(manager => manager.Manager)
+  const allEmployees = await db.promise().query(`SELECT id, role_id, CONCAT(first_name, ' ', last_name) AS full_name FROM employee`)
+  const employeeFullNames = allEmployees[0].map(textRow => [textRow.id, textRow.full_name].join('.'))
 
   return inquirer.prompt([
     {
@@ -29,7 +31,9 @@ const promptUser = async () => {
         'View roles',
         'Add a role',
         'View employees',
-        'Add an employee'
+        'Add an employee',
+        'Update an employee\'s role',
+        'Exit'
       ]
     },
     {
@@ -99,7 +103,25 @@ const promptUser = async () => {
         return answers.menuOption === 'Add an employee'
       }
     },
-  ]).then(({ menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager }) => {
+    {
+      type: 'list',
+      message: `Which employee's role would you like to update?`,
+      name: 'employeeToUpdate',
+      choices: employeeFullNames,
+      when(answers) {
+        return answers.menuOption === 'Update an employee\'s role'
+      }
+    },
+    {
+      type: 'list',
+      message: 'Which role do you want to assign the selected employee to?',
+      name: 'employeeNewRole',
+      choices: roleTitles,
+      when(answers) {
+        return answers.menuOption === 'Update an employee\'s role'
+      }
+    }
+  ]).then(({ menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole }) => {
     switch (menuOption) {
       case 'View departments':
         getDepartments()
@@ -136,7 +158,6 @@ const promptUser = async () => {
 
         if (employeeManager === 'None') {
           managerId = null
-
         } else {
           const [tempFirstName, tempLastName] = employeeManager.split(' ')
           const filteredManager = allManagers[0].filter(individualRow => individualRow.first_name === tempFirstName && individualRow.last_name === tempLastName)
@@ -146,6 +167,18 @@ const promptUser = async () => {
        createEmployee(employeeFirstName, employeeLastName, roleId, managerId)
        promptUser()
        break;
+
+      case 'Update an employee\'s role':
+        const filteredUpdatedRole = allRoles[0].filter(individualRow => individualRow.title === employeeNewRole)
+        const updatedRoleId = filteredUpdatedRole[0].id
+        const employeeId = employeeToUpdate.split('.')[0]
+        updateEmployeeRole(updatedRoleId, employeeId)
+        promptUser()
+        break;
+      
+      case 'Exit':
+        console.log('Goodbye')
+        process.exit(0)
 
       default:
         console.log('using default of switch statement')
