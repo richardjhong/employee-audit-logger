@@ -30,7 +30,7 @@ const createDepartment = (name) => {
 }
 
 const getRoles = () => {
-  const sqlQuery = `SELECT department.name AS department, 
+  const sqlQuery = `SELECT role.id, department.name AS department, 
                     title, salary 
                     FROM role
                     LEFT JOIN department ON role.department_id = department.id ORDER BY department.name;`;
@@ -56,9 +56,27 @@ const createRole = (title, salary, departmentId) => {
   });
 }
 
+const getEmployees = () => {
+  const sqlQuery = `SELECT
+                    E.id, E.first_name, E.last_name, role.title, department.name AS department, role.salary, CONCAT(M.first_name, ' ', M.last_name) AS manager
+                    FROM employee E
+                    LEFT JOIN employee M ON M.id = E.manager_id
+                    LEFT JOIN role ON E.role_id = role.id
+                    LEFT JOIN department ON role.department_id = department.id 
+                    ORDER BY E.id
+                 ;`;
+    db.promise().query(sqlQuery)
+    .then( ([rows, fields]) => {
+      console.log('\n')
+      console.table(rows)
+    })
+    .catch(console.log)
+}
+
 module.exports = {
   getDepartments,
   createDepartment,
   getRoles,
-  createRole
+  createRole,
+  getEmployees
 };

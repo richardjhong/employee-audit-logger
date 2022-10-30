@@ -1,6 +1,6 @@
 const express = require('express');
 const inquirer = require('inquirer');
-const { getDepartments, createDepartment, getRoles, createRole } = require('./utils/departmentFunctions')
+const { getDepartments, createDepartment, getRoles, createRole, getEmployees } = require('./utils/departmentFunctions')
 const db = require('./config/connection')
 
 const PORT = process.env.PORT || 3001;
@@ -23,7 +23,8 @@ const promptUser = async () => {
         'View departments',
         'Add a department',
         'View roles',
-        'Add a role'
+        'Add a role',
+        'View employees'
       ]
     },
     {
@@ -81,6 +82,11 @@ const promptUser = async () => {
         const departmentId = filtered[0].id
 
         createRole(roleTitle, roleSalary, departmentId)
+        promptUser();
+        break;
+
+      case 'View employees':
+        getEmployees()
         promptUser();
         break;
 
