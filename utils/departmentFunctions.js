@@ -25,7 +25,7 @@ const createDepartment = (name) => {
       console.log(err)
       return;
     }
-    console.log(`${name} added to departments`)
+    console.log(`Department added to database.`)
   });
 }
 
@@ -49,10 +49,10 @@ const createRole = (title, salary, departmentId) => {
 
   db.promise().query(sql, params, (err, result) => {
     if (err) {
-      res.status(400).json({ error: err.message });
+      console.log(err)
       return;
     }
-    console.log(`Role added.`)
+    console.log(`Role added to database.`)
   });
 }
 
@@ -73,10 +73,25 @@ const getEmployees = () => {
     .catch(console.log)
 }
 
+const createEmployee = (first_name, last_name, role_id, manager_id) => {
+  const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    VALUES (?, ?, ?, ?)`;
+  const params = [first_name, last_name, role_id, manager_id];
+
+  db.promise().query(sql, params, (err, result) => {
+    if (err) {
+      console.log(err)
+      return;
+    }
+    console.log(`Employee added to database.`)
+  });
+}
+
 module.exports = {
   getDepartments,
   createDepartment,
   getRoles,
   createRole,
-  getEmployees
+  getEmployees,
+  createEmployee
 };
