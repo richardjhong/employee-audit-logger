@@ -1,5 +1,6 @@
 const db = require("../config/connection");
 const inquirer = require('inquirer');
+const cTable = require('console.table');
 
 // Get all departments
 const getDepartments = () => {
@@ -41,8 +42,23 @@ const getRoles = () => {
     .catch(console.log)
 }
 
+const createRole = (title, salary, departmentId) => {
+  const sql = `INSERT INTO role (title, salary, department_id)
+    VALUES (?, ?, ?)`;
+  const params = [title, salary, departmentId];
+
+  db.promise().query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    console.log(`Role added.`)
+  });
+}
+
 module.exports = {
   getDepartments,
   createDepartment,
-  getRoles
+  getRoles,
+  createRole
 };

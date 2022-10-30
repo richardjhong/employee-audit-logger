@@ -1,6 +1,7 @@
 const express = require('express');
 const inquirer = require('inquirer');
-const { getDepartments, createDepartment, getRoles } = require('./utils/departmentFunctions')
+const { getDepartments, createDepartment, getRoles, createRole } = require('./utils/departmentFunctions')
+const db = require('./config/connection')
 
 const PORT = process.env.PORT || 3001;
 
@@ -9,7 +10,10 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const promptUser = () => {
+const promptUser = async () => {
+  const allDepartments = await db.promise().query('SELECT id, name AS title FROM department')
+  const titles = allDepartments[0].map(textRow => textRow.title )
+
   return inquirer.prompt([
     {
       type: 'list',
@@ -18,7 +22,8 @@ const promptUser = () => {
       choices: [
         'View departments',
         'Add a department',
-        'View roles'
+        'View roles',
+        'Add a role'
       ]
     },
     {
@@ -28,8 +33,33 @@ const promptUser = () => {
       when(answers) {
         return answers.menuOption === 'Add a department'
       }
+    },
+    {
+      type: 'input',
+      message: 'What is the title of the role?',
+      name: 'roleTitle',
+      when(answers) {
+        return answers.menuOption === 'Add a role'
+      }
+    },
+    {
+      type: 'input',
+      message: 'What is the salary of the role?',
+      name: 'roleSalary',
+      when(answers) {
+        return answers.menuOption === 'Add a role'
+      }
+    },
+    {
+      type: 'list',
+      message: 'Please select the department',
+      name: 'roleDepartment',
+      choices: titles,
+      when(answers) {
+        return answers.menuOption === 'Add a role'
+      }
     }
-  ]).then(({ menuOption, departmentName }) => {
+  ]).then(({ menuOption, departmentName, roleTitle, roleSalary, roleDepartment }) => {
     switch (menuOption) {
       case 'View departments':
         getDepartments()
@@ -46,6 +76,14 @@ const promptUser = () => {
         promptUser();
         break;
 
+      case 'Add a role':
+        const filtered = allDepartments[0].filter(individualRow => individualRow.title === roleDepartment)
+        const departmentId = filtered[0].id
+
+        createRole(roleTitle, roleSalary, departmentId)
+        promptUser();
+        break;
+
       default:
         console.log('using default of switch statement')
         return;
@@ -58,9 +96,6 @@ app.use((req, res) => {
 });
 
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-})
-
+app.listen(PORT, () => {})
 
 promptUser()
