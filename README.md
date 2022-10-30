@@ -71,7 +71,7 @@ For this program, the logic is mostly spread amongst four files:
   * answerHandling.js within utils
     - answerHandling.js is essentially a giant switch statement to handle a response to each of the inquirer prompts. This file passes the data needed along with imported functions from menuFunctions.js to make the database queries next.
   * menuFunctions.js within utils
-    - menuFunctions.js takes the data built from server.js and answerHandling.js and makes SQL queries.
+    - menuFunctions.js takes the data built from server.js and answerHandling.js and makes SQL queries either through SELECT (for getting information e.g. getting department table information, getting the SUM of a department budget), INSERT for adding a new row within a table, and UPDATE for the updating an employee's role functionality.
   * connection.js within config
     - connection.js creates a modular mysql connection to the employee_db. 
 
