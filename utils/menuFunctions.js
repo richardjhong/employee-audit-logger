@@ -110,7 +110,6 @@ const viewDepartmentBudget = (departmentId) => {
                FROM role
                WHERE department_id = ${departmentId}
               `
-  const params = [departmentId]
   db.promise().query(sql)
     .then( ([rows, fields]) => {
       console.log('\n')
