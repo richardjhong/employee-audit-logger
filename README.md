@@ -5,16 +5,17 @@
 ![Employee Audit Logger gif](./assets/images/demo.gif)
 
 ## Description
-This app takes user input via CLI (command line interface) commands and can interact, update, and add employees to a SQL database.
+This app takes user input via CLI (command line interface) commands and can interact, update, and add employees to an SQL database.
 
 ## Technologies
-This app is built with [Node.js](https://nodejs.org/en/), [Inquirer](https://www.npmjs.com/package/inquirer) (version 8.2.4), [Express](https://expressjs.com/) (version 4.18.2), [mysql2](https://www.npmjs.com/package/mysql2), and [console.table](https://www.npmjs.com/package/console.table)]
+This app is built with [Node.js](https://nodejs.org/en/), [Inquirer](https://www.npmjs.com/package/inquirer) (version 8.2.4), [Express](https://expressjs.com/) (version 4.18.2), [mysql2](https://www.npmjs.com/package/mysql2), and [console.table](https://www.npmjs.com/package/console.table).
 
 
 ## Table of Contents
   - [Installation](#installation)
   - [Usage](#usage)
   - [Architecture](#architecture)
+  - [Video Demo](#demo)
   - [Screenshot](#screenshot)
   - [License](#license)
   - [Improvements](#improvements)
@@ -31,7 +32,7 @@ After cloning the repository, user should run the following command within the t
 ```
 npm install
 ```
-Afterwards check towards the bottom within package.json; the user should see Express version 4.18.2 as a dependency and nodemon version 2.0.20 as a dependency.
+Afterwards check towards the bottom within package.json; the user should see the following within the dependencies object:
 
 ```
 ...
@@ -66,14 +67,16 @@ After running the command, the user should expect to see something similar withi
 ## Architecture
 For this program, the logic is mostly spread amongst four files: 
   * server.js on root level
+    - server.js mostly servers as main file in which inquirer asks questions internally (within server.js) and then handles the answers within answerHandling.js. There are variables stored within server.js at the beginning before inquirer prompt begins in order to dynamically list options within certain questions.
   * answerHandling.js within utils
+    - answerHandling.js is essentially a giant switch statement to handle a response to each of the inquirer prompts. This file passes the data needed along with imported functions from menuFunctions.js to make the database queries next.
   * menuFunctions.js within utils
+    - menuFunctions.js takes the data built from server.js and answerHandling.js and makes SQL queries.
   * connection.js within config
+    - connection.js creates a modular mysql connection to the employee_db. 
 
-- connection.js creates a modular mysql connection to the employee_db. 
-- server.js mostly servers as main file in which inquirer asks questions internally (within server.js) and then handles the answers within answerHandling.js. There are variables stored within server.js at the beginning before inquirer prompt begins in order to dynamically list options within certain questions.
-- answerHandling.js is essentially a giant switch statement to handle a response to each of the inquirer prompts. This file passes the data needed along with imported functions from menuFunctions.js to make the database queries next.
-- menuFunctions.js takes the data built from server.js and answerHandling.js and makes SQL queries.
+## Demo
+[Video demo](https://drive.google.com/file/d/1gbNFVMtGatIuAzFYRnh4cBwGTPJmcOq1/view)
 
 ## Screenshot
 ![screenshot](./assets/images/screenshot.png)
