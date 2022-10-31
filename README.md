@@ -75,7 +75,7 @@ For this program, the logic is mostly spread amongst four files:
     - connection.js creates a modular mysql connection to the employee_db.
 
 ## Demo
-[Video demo](https://drive.google.com/file/d/166Y4ormdujSRUwjHqWO_IlmTORlYYXvy/view)
+[Video demo](https://drive.google.com/file/d/1sbGJ4F9spq0oKj9-VVCI4VDNyC8YK7cC/view)
 
 ## Screenshot
 ![screenshot](./assets/images/screenshot.png)
