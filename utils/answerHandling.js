@@ -64,7 +64,7 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
     case 'View budget of a department':
       const filteredDepartmentBudgetTitle = allDepartments[0].filter(individualRow => individualRow.title === departmentBudgetTitle)
       const budgetDepartmentId = filteredDepartmentBudgetTitle[0].id
-      viewDepartmentBudget(budgetDepartmentId)
+      viewDepartmentBudget(budgetDepartmentId, departmentBudgetTitle)
       break;
     
     case 'Exit':

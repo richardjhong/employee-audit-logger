@@ -105,14 +105,15 @@ const updateEmployeeRole = (role_id, employee_id) => {
 }
 
 // Get sum of all salaries of matching department id
-const viewDepartmentBudget = (departmentId) => {
-  const sql = `SELECT SUM(salary) as Budget
-               FROM role
-               WHERE department_id = ${departmentId}
+const viewDepartmentBudget = (departmentId, departmentBudgetTitle) => {
+  const sql = `SELECT SUM(role.salary) as Budget
+               FROM employee 
+               LEFT JOIN role ON employee.role_id = role.id
+               WHERE role.department_id = ${departmentId}
               `
   db.promise().query(sql)
     .then( ([rows, fields]) => {
-      console.log('\n')
+      console.log(`\n${departmentBudgetTitle}`)
       console.table(rows)
     })
     .catch(console.log)
