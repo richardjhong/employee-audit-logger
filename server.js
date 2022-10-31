@@ -218,7 +218,7 @@ const promptUser = async () => {
       }
     }
   ]).then((answers) => {
-    handleAnswers(answers, allEmployees, allDepartments, allManagers, allRoles)
+    handleAnswers(answers, allDepartments, allManagers, allRoles)
     promptUser();
   })
 }

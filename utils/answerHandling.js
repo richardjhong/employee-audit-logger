@@ -1,6 +1,6 @@
 const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, updateEmployeeManager, viewDepartmentBudget, deleteDepartment, deleteRole, deleteEmployee, displayDepartmentEmployees, displayManagerEmployees } = require('./menuFunctions')
 
-const handleAnswers = (answers, allEmployees, allDepartments, allManagers, allRoles) => {
+const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
   const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle, departmentToDelete, confirmDeleteDepartment, roleToDelete, confirmDeleteRole, employeeToDelete, confirmDeleteEmployee, departmentOfEmployees, managerOfEmployees } = answers
 
   switch (menuOption) {
@@ -45,7 +45,6 @@ const handleAnswers = (answers, allEmployees, allDepartments, allManagers, allRo
       if (employeeManager === '0. None') {
         managerId = null
       } else {
-        console.log('test: ', employeeManager.split(' '))
         const [id, tempFirstName, tempLastName] = employeeManager.split(' ')
         managerId = id
       }
