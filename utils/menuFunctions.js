@@ -118,9 +118,36 @@ const viewDepartmentBudget = (departmentId, departmentBudgetTitle) => {
 // Delete a department
 const deleteDepartment = (departmentToDelete) => {
   const sql = `DELETE FROM department
-               WHERE department.name = ?
+               WHERE name = ?
               `
   const params = [departmentToDelete]
+  db.promise().query(sql, params, (err, result) => {
+    if (err) {
+      console.log(err)
+      return;
+    }
+  });
+}
+
+// Delete a role
+const deleteRole = (roleToDelete) => {
+  const sql = `DELETE FROM role
+               WHERE title = ?
+              `
+  const params = [roleToDelete]
+  db.promise().query(sql, params, (err, result) => {
+    if (err) {
+      console.log(err)
+      return;
+    }
+  });
+}
+
+const deleteEmployee = (employeeToRemoveId) => {
+  const sql = `DELETE FROM employee
+               WHERE id = ?
+              `
+  const params = [employeeToRemoveId]
   db.promise().query(sql, params, (err, result) => {
     if (err) {
       console.log(err)
@@ -138,5 +165,7 @@ module.exports = {
   createEmployee,
   updateEmployeeRole,
   viewDepartmentBudget,
-  deleteDepartment
+  deleteDepartment,
+  deleteRole,
+  deleteEmployee
 };

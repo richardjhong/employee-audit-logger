@@ -38,9 +38,11 @@ const promptUser = async () => {
         'Remove a department',
         'View roles',
         'Add a role',
+        'Remove a role',
         'View employees',
         'Add an employee',
         'Update an employee\'s role',
+        'Remove an employee',
         'View budget of a department',
         'Exit'
       ]
@@ -154,6 +156,40 @@ const promptUser = async () => {
       name: 'confirmDeleteDepartment',
       when(answers) {
         return answers.departmentToDelete
+      }
+    },
+    {
+      type: 'list',
+      message: 'Please choose which role to remove.',
+      name: 'roleToDelete',
+      choices: roleTitles,
+      when(answers) {
+        return answers.menuOption === 'Remove a role'
+      }
+    },
+    {
+      type: 'confirm',
+      message: (answers) => `Are you sure you want to remove ${answers.roleToDelete}? This is an irreversible operation.`,
+      name: 'confirmDeleteRole',
+      when(answers) {
+        return answers.roleToDelete
+      }
+    },
+    {
+      type: 'list',
+      message: 'Please choose which employee to remove.',
+      name: 'employeeToDelete',
+      choices: employeeFullNames,
+      when(answers) {
+        return answers.menuOption === 'Remove an employee'
+      }
+    },
+    {
+      type: 'confirm',
+      message: (answers) => `Are you sure you want to remove ${answers.employeeToDelete}? This is an irreversible operation.`,
+      name: 'confirmDeleteEmployee',
+      when(answers) {
+        return answers.employeeToDelete
       }
     }
   ]).then((answers) => {

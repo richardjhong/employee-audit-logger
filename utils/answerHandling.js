@@ -1,7 +1,7 @@
-const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, viewDepartmentBudget, deleteDepartment } = require('./menuFunctions')
+const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, viewDepartmentBudget, deleteDepartment, deleteRole, deleteEmployee } = require('./menuFunctions')
 
 const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
-  const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle, departmentToDelete, confirmDeleteDepartment } = answers
+  const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle, departmentToDelete, confirmDeleteDepartment, roleToDelete, confirmDeleteRole, employeeToDelete, confirmDeleteEmployee } = answers
   switch (menuOption) {
     case 'View departments':
       getDepartments()
@@ -81,6 +81,23 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
       }
       console.log('\n')
       console.log(`${departmentToDelete} has been deleted from departments.`)
+      break;
+
+    case 'Remove a role':
+      if (confirmDeleteRole) {
+        deleteRole(roleToDelete)
+      }
+      console.log('\n')
+      console.log(`${roleToDelete} has been deleted from roles.`)
+      break;
+
+    case 'Remove an employee':
+      if (confirmDeleteEmployee) {
+        const employeeToRemoveId = employeeToDelete.split('.')[0]
+        deleteEmployee(employeeToRemoveId)
+      }
+      console.log('\n')
+      console.log(`${employeeToDelete.split('.')[1]} has been deleted from employees.`)
       break;
     
     case 'Exit':
