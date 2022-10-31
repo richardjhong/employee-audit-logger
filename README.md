@@ -5,7 +5,7 @@
 ![Employee Audit Logger gif](./assets/images/demo.gif)
 
 ## Description
-This app takes user input via CLI (command line interface) commands and can interact, update, and add employees to an SQL database.
+This app takes user input via CLI (command line interface) commands and can interact, update, add, and delete employees/roles/departments to an SQL database.
 
 ## Technologies
 This app is built with [Node.js](https://nodejs.org/en/), [Inquirer](https://www.npmjs.com/package/inquirer) (version 8.2.4), [Express](https://expressjs.com/) (version 4.18.2), [mysql2](https://www.npmjs.com/package/mysql2) (version 2.2.5), and [console.table](https://www.npmjs.com/package/console.table) (version 0.10.0).
@@ -70,7 +70,7 @@ For this program, the logic is mostly spread amongst four files:
   * answerHandling.js within utils
     - answerHandling.js is essentially a giant switch statement to handle a response to each of the inquirer prompts. This file passes the data needed along with imported functions from menuFunctions.js to make the database queries next.
   * menuFunctions.js within utils
-    - menuFunctions.js takes the data built from server.js and answerHandling.js and makes SQL queries either through SELECT (for getting information e.g. getting department table information, getting the SUM of a department budget), INSERT for adding a new row within a table, and UPDATE for the updating an employee's role functionality.
+    - menuFunctions.js takes the data built from server.js and answerHandling.js and makes SQL queries either through SELECT (for getting information e.g. getting department table information, getting the SUM of a department budget), INSERT for adding a new row within a table, UPDATE for the updating an employee's role functionality, and DELETE for removing a row from a table.
   * connection.js within config
     - connection.js creates a modular mysql connection to the employee_db.
 
