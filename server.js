@@ -125,7 +125,7 @@ const promptUser = async () => {
       // can be the manager. Otherwise the menuOption is updating an employee's
       // manager, in which case the employee cannot be the manager of himself/
       // herself.
-      choices: (answers) => answers.menuOption === 'Add an employee'  ?['0. None', ...employeeFullNames] : ['0. None', ...employeeFullNames.filter(employee => employee.split('.')[0] !== answers.employeeToUpdate.split('.')[0])],
+      choices: (answers) => answers.menuOption === 'Add an employee' ? ['0. None', ...employeeFullNames] : ['0. None', ...employeeFullNames.filter(employee => employee.split('.')[0] !== answers.employeeToUpdate.split('.')[0])],
       when(answers) {
         return (answers.menuOption === 'Add an employee' || answers.menuOption === 'Update an employee\'s manager')
       }

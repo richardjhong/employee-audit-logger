@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![Employee Audit Logger gif](./assets/images/demo.gif)
+![Employee Management Tracker gif](./assets/images/demo.gif)
 
 ## Description
 This app takes user input via CLI (command line interface) commands and can interact, update, add, and delete employees/roles/departments to an SQL database.
@@ -70,7 +70,7 @@ For this program, the logic is mostly spread amongst four files:
   * answerHandling.js within utils
     - answerHandling.js is essentially a giant switch statement to handle a response to each of the inquirer prompts. This file passes the data needed along with imported functions from menuFunctions.js to make the database queries next.
   * menuFunctions.js within utils
-    - menuFunctions.js takes the data built from server.js and answerHandling.js and makes SQL queries either through SELECT (for getting information e.g. getting department table information, getting the SUM of a department budget), INSERT for adding a new row within a table, UPDATE for the updating an employee's role functionality, and DELETE for removing a row from a table.
+    - menuFunctions.js takes the data built from server.js and answerHandling.js and makes SQL queries either through SELECT (for getting information e.g. getting department table information, getting the SUM of a department budget), INSERT for adding a new row within a table, UPDATE for the updating an employee's role/manager functionality, and DELETE for removing a row from a table.
   * connection.js within config
     - connection.js creates a modular mysql connection to the employee_db.
 
@@ -86,6 +86,8 @@ This app was licensed under the MIT License.
 ## Improvements
 Creating validation for each answer to an inquirer question would be one area of improvement. 
 Another improvement would be better handling of the logic for mapping the id of an answer extracted from an inquirer list question. There are several variables to help account tracking of the ids prior to extraction within server.js but I suspect that stronger understanding of mySql2 queries can alleviate or possibly eliminate the need for said variables.
+
+Rewording and refactoring some of the inquirer questions to be appropriate answers for multiple different choices would also reduce some code length albeit at the expense of some code purpose not being as explicitly clear.
 
 ## Questions
 Questions, comments, concerns? Send me an email at rhong24@gmail.com.
