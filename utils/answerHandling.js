@@ -1,7 +1,7 @@
-const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, viewDepartmentBudget } = require('./menuFunctions')
+const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, viewDepartmentBudget, deleteDepartment } = require('./menuFunctions')
 
 const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
-  const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle } = answers
+  const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle, departmentToDelete, confirmDeleteDepartment } = answers
   switch (menuOption) {
     case 'View departments':
       getDepartments()
@@ -9,6 +9,8 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
 
     case 'Add a department':
       createDepartment(departmentName)
+      console.log('\n')
+      console.log(`${departmentName} added to departments!`)
       break;
 
     case 'View roles':
@@ -23,6 +25,8 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
       const departmentId = filtered[0].id
 
       createRole(roleTitle, roleSalary, departmentId)
+      console.log('\n')
+      console.log(`${roleTitle} added to roles!`)
       break;
 
     case 'View employees':
@@ -46,6 +50,8 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
 
       }
      createEmployee(employeeFirstName, employeeLastName, roleId, managerId)
+     console.log('\n')
+     console.log(`${employeeFirstName} ${employeeLastName} added to employees!`)
      break;
 
     // in the case of multiple employees with the same first name and last
@@ -57,6 +63,8 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
       const updatedRoleId = filteredUpdatedRole[0].id
       const employeeId = employeeToUpdate.split('.')[0]
       updateEmployeeRole(updatedRoleId, employeeId)
+      console.log('\n')
+      console.log(`Employee role updated.`)
       break;
 
     // finds the department id matching that of the department name and 
@@ -65,6 +73,14 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
       const filteredDepartmentBudgetTitle = allDepartments[0].filter(individualRow => individualRow.title === departmentBudgetTitle)
       const budgetDepartmentId = filteredDepartmentBudgetTitle[0].id
       viewDepartmentBudget(budgetDepartmentId, departmentBudgetTitle)
+      break;
+
+    case 'Remove a department':
+      if (confirmDeleteDepartment) {
+        deleteDepartment(departmentToDelete)
+      }
+      console.log('\n')
+      console.log(`${departmentToDelete} has been deleted from departments.`)
       break;
     
     case 'Exit':

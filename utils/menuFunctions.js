@@ -25,7 +25,6 @@ const createDepartment = (name) => {
       console.log(err)
       return;
     }
-    console.log(`Department added to database.`)
   });
 }
 
@@ -54,7 +53,6 @@ const createRole = (title, salary, departmentId) => {
       console.log(err)
       return;
     }
-    console.log(`Role added to database.`)
   });
 }
 
@@ -87,7 +85,6 @@ const createEmployee = (first_name, last_name, role_id, manager_id) => {
       console.log(err)
       return;
     }
-    console.log(`Employee added to database.`)
   });
 }
 
@@ -100,7 +97,6 @@ const updateEmployeeRole = (role_id, employee_id) => {
       console.log(err)
       return;
     }
-    console.log(`Employee role updated.`)
   });
 }
 
@@ -119,6 +115,20 @@ const viewDepartmentBudget = (departmentId, departmentBudgetTitle) => {
     .catch(console.log)
 }
 
+// Delete a department
+const deleteDepartment = (departmentToDelete) => {
+  const sql = `DELETE FROM department
+               WHERE department.name = ?
+              `
+  const params = [departmentToDelete]
+  db.promise().query(sql, params, (err, result) => {
+    if (err) {
+      console.log(err)
+      return;
+    }
+  });
+}
+
 module.exports = {
   getDepartments,
   createDepartment,
@@ -127,5 +137,6 @@ module.exports = {
   getEmployees,
   createEmployee,
   updateEmployeeRole,
-  viewDepartmentBudget
+  viewDepartmentBudget,
+  deleteDepartment
 };

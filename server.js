@@ -35,6 +35,7 @@ const promptUser = async () => {
       choices: [
         'View departments',
         'Add a department',
+        'Remove a department',
         'View roles',
         'Add a role',
         'View employees',
@@ -136,6 +137,23 @@ const promptUser = async () => {
       choices: departmentTitles,
       when(answers) {
         return answers.menuOption === 'View budget of a department'
+      }
+    },
+    {
+      type: 'list',
+      message: 'Please choose which department to remove.',
+      name: 'departmentToDelete',
+      choices: departmentTitles,
+      when(answers) {
+        return answers.menuOption === 'Remove a department'
+      }
+    },
+    {
+      type: 'confirm',
+      message: (answers) => `Are you sure you want to remove ${answers.departmentToDelete}? This is an irreversible operation.`,
+      name: 'confirmDeleteDepartment',
+      when(answers) {
+        return answers.departmentToDelete
       }
     }
   ]).then((answers) => {
