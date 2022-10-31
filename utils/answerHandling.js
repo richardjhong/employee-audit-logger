@@ -1,7 +1,8 @@
-const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, viewDepartmentBudget, deleteDepartment, deleteRole, deleteEmployee, displayDepartmentEmployees, displayManagerEmployees } = require('./menuFunctions')
+const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, updateEmployeeManager, viewDepartmentBudget, deleteDepartment, deleteRole, deleteEmployee, displayDepartmentEmployees, displayManagerEmployees } = require('./menuFunctions')
 
-const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
+const handleAnswers = (answers, allEmployees, allDepartments, allManagers, allRoles) => {
   const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle, departmentToDelete, confirmDeleteDepartment, roleToDelete, confirmDeleteRole, employeeToDelete, confirmDeleteEmployee, departmentOfEmployees, managerOfEmployees } = answers
+
   switch (menuOption) {
     case 'View departments':
       getDepartments()
@@ -41,16 +42,16 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
       const roleId = filteredRole[0].id
       let managerId = '';
 
-      if (employeeManager === 'None') {
+      if (employeeManager === '0. None') {
         managerId = null
       } else {
-        const [tempFirstName, tempLastName] = employeeManager.split(' ')
-        const filteredManager = allManagers[0].filter(individualRow => individualRow.first_name === tempFirstName && individualRow.last_name === tempLastName)
-        managerId = filteredManager[0].id
+        console.log('test: ', employeeManager.split(' '))
+        const [id, tempFirstName, tempLastName] = employeeManager.split(' ')
+        managerId = id
       }
      createEmployee(employeeFirstName, employeeLastName, roleId, managerId)
      console.log('\n')
-     console.log(`${employeeFirstName} ${employeeLastName} added to employees!`)
+     console.log(`${employeeFirstName} ${employeeLastName} has been added to employees!`)
      break;
 
     // in the case of multiple employees with the same first name and last
@@ -63,7 +64,20 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
       const employeeId = employeeToUpdate.split('.')[0]
       updateEmployeeRole(updatedRoleId, employeeId)
       console.log('\n')
-      console.log(`Employee role updated.`)
+      console.log(`${employeeToUpdate.split('.')[1]}'s role has been updated.`)
+      break;
+
+
+    // if an employee's manager is set to '0. None', then the manager_id is 
+    // set to null, otherwise the manager_id is assigned to the 
+    // employeeManager's id
+    case 'Update an employee\'s manager':
+      const employeeBeingUpdateId = employeeToUpdate.split('.')[0]
+      const newManagerToEmployeeId = employeeManager.split('.')[0]
+
+      employeeManager === '0. None' ? updateEmployeeManager(null, employeeBeingUpdateId) : updateEmployeeManager(newManagerToEmployeeId, employeeBeingUpdateId)
+      console.log('\n')
+      console.log(`${employeeToUpdate.split('.')[1]}'s manager has been updated.`)
       break;
 
     // finds the department id matching that of the department name and 
@@ -106,8 +120,8 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
       break;
 
     case 'View employees by manager':
-      const [tempFirstName, tempLastName] = managerOfEmployees.split(' ')
-      const filteredManagerOfEmployees = allManagers[0].filter(individualRow => individualRow.first_name === tempFirstName && individualRow.last_name === tempLastName)
+      const [tempManagerOfEmployeesFirstName, tempManagerOfEmployeesLastName] = managerOfEmployees.split(' ')
+      const filteredManagerOfEmployees = allManagers[0].filter(individualRow => individualRow.first_name === tempManagerOfEmployeesFirstName && individualRow.last_name === tempManagerOfEmployeesLastName)
       const filteredManagerOfEmployeesId = filteredManagerOfEmployees[0].id
       displayManagerEmployees(filteredManagerOfEmployeesId)
       break;

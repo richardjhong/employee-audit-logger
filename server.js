@@ -24,7 +24,7 @@ const promptUser = async () => {
   const roleTitles = allRoles[0].map(textRow => textRow.title)
   const allManagers = await db.promise().query(`SELECT  M.id, M.first_name, M.last_name, CONCAT(M.first_name, ' ', M.last_name) AS Manager FROM employee E LEFT JOIN employee M on M.id = E.manager_id`)
   const managerNames = [...new Set(allManagers[0].filter(manager => manager.Manager !== null).map(manager => manager.Manager))]
-  const allEmployees = await db.promise().query(`SELECT id, role_id, CONCAT(first_name, ' ', last_name) AS full_name FROM employee`)
+  const allEmployees = await db.promise().query(`SELECT id, role_id, first_name, last_name, CONCAT(first_name, ' ', last_name) AS full_name FROM employee`)
   const employeeFullNames = allEmployees[0].map(textRow => [textRow.id, textRow.full_name].join('. '))
 
   return inquirer.prompt([
@@ -42,6 +42,7 @@ const promptUser = async () => {
         'View employees',
         'Add an employee',
         'Update an employee\'s role',
+        'Update an employee\'s manager',
         'Remove an employee',
         'View employees by manager',
         'View employees by department',
@@ -109,20 +110,24 @@ const promptUser = async () => {
     },
     {
       type: 'list',
-      message: `Who is the employee's manager?`,
-      name: 'employeeManager',
-      choices: ['None', ...managerNames],
+      message: `Which employee would you like to update?`,
+      name: 'employeeToUpdate',
+      choices: employeeFullNames,
       when(answers) {
-        return answers.menuOption === 'Add an employee'
+        return (answers.menuOption === 'Update an employee\'s role' || answers.menuOption === 'Update an employee\'s manager')
       }
     },
     {
       type: 'list',
-      message: `Which employee's role would you like to update?`,
-      name: 'employeeToUpdate',
-      choices: employeeFullNames,
+      message: `Who is the employee's manager?`,
+      name: 'employeeManager',
+      // if the menuOption is 'Add an employee', then any existing employee 
+      // can be the manager. Otherwise the menuOption is updating an employee's
+      // manager, in which case the employee cannot be the manager of himself/
+      // herself.
+      choices: (answers) => answers.menuOption === 'Add an employee'  ?['0. None', ...employeeFullNames] : ['0. None', ...employeeFullNames.filter(employee => employee.split('.')[0] !== answers.employeeToUpdate.split('.')[0])],
       when(answers) {
-        return answers.menuOption === 'Update an employee\'s role'
+        return (answers.menuOption === 'Add an employee' || answers.menuOption === 'Update an employee\'s manager')
       }
     },
     {
@@ -213,7 +218,7 @@ const promptUser = async () => {
       }
     }
   ]).then((answers) => {
-    handleAnswers(answers, allDepartments, allManagers, allRoles)
+    handleAnswers(answers, allEmployees, allDepartments, allManagers, allRoles)
     promptUser();
   })
 }

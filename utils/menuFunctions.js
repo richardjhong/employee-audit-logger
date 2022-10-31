@@ -75,10 +75,10 @@ const getEmployees = () => {
 }
 
 // Create an employee
-const createEmployee = (first_name, last_name, role_id, manager_id) => {
+const createEmployee = (firstName, lastName, roleId, managerId) => {
   const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
     VALUES (?, ?, ?, ?)`;
-  const params = [first_name, last_name, role_id, manager_id];
+  const params = [firstName, lastName, roleId, managerId];
 
   db.promise().query(sql, params, (err, result) => {
     if (err) {
@@ -89,9 +89,20 @@ const createEmployee = (first_name, last_name, role_id, manager_id) => {
 }
 
 // Update an employee's role
-const updateEmployeeRole = (role_id, employee_id) => {
+const updateEmployeeRole = (roleId, employeeId) => {
   const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
-  const params = [role_id, employee_id]
+  const params = [roleId, employeeId]
+  db.promise().query(sql, params, (err, result) => {
+    if (err) {
+      console.log(err)
+      return;
+    }
+  });
+}
+
+const updateEmployeeManager = (managerId, employeeId) => {
+  const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`
+  const params = [managerId, employeeId]
   db.promise().query(sql, params, (err, result) => {
     if (err) {
       console.log(err)
@@ -200,6 +211,7 @@ module.exports = {
   getEmployees,
   createEmployee,
   updateEmployeeRole,
+  updateEmployeeManager,
   viewDepartmentBudget,
   deleteDepartment,
   deleteRole,
