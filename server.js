@@ -43,6 +43,8 @@ const promptUser = async () => {
         'Add an employee',
         'Update an employee\'s role',
         'Remove an employee',
+        'View employees by manager',
+        'View employees by department',
         'View budget of a department',
         'Exit'
       ]
@@ -190,6 +192,24 @@ const promptUser = async () => {
       name: 'confirmDeleteEmployee',
       when(answers) {
         return answers.employeeToDelete
+      }
+    },
+    {
+      type: 'list',
+      message: 'Which department would you like to see with associated employees?',
+      name: 'departmentOfEmployees',
+      choices: departmentTitles,
+      when(answers) {
+        return answers.menuOption === 'View employees by department'
+      }
+    },
+    {
+      type: 'list',
+      message: 'Which manager would you like to see with associated employees?',
+      name: 'managerOfEmployees',
+      choices: managerNames,
+      when(answers) {
+        return answers.menuOption === 'View employees by manager'
       }
     }
   ]).then((answers) => {

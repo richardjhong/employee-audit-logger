@@ -143,6 +143,7 @@ const deleteRole = (roleToDelete) => {
   });
 }
 
+// Delete an employee
 const deleteEmployee = (employeeToRemoveId) => {
   const sql = `DELETE FROM employee
                WHERE id = ?
@@ -156,6 +157,41 @@ const deleteEmployee = (employeeToRemoveId) => {
   });
 }
 
+// Get employees based on department
+const displayDepartmentEmployees = (departmentOfEmployeesId) => {
+  const sql = `SELECT department.name AS department, 
+               CONCAT(first_name, ' ',    last_name) AS employee
+               FROM employee 
+               LEFT JOIN role ON employee.role_id = role.id
+               LEFT JOIN department ON role.department_id = department.id 
+               WHERE role.department_id = ${departmentOfEmployeesId}
+               `
+  db.promise().query(sql)
+    .then( ([rows, fields]) => {
+      console.log(`\n`)
+      console.table(rows)
+    })
+    .catch(console.log)
+}
+
+// Get employees based on manager
+const displayManagerEmployees = (managerOfEmployeesId) => {
+const sqlQuery = `SELECT
+                  CONCAT(M.first_name, ' ', M.last_name) AS manager, CONCAT(E.first_name, ' ', E.last_name) AS employee
+                  FROM employee E
+                  LEFT JOIN employee M ON M.id = E.manager_id
+                  LEFT JOIN role ON E.role_id = role.id
+                  LEFT JOIN department ON role.department_id = department.id 
+                  WHERE M.id = ${managerOfEmployeesId}
+                ;`;
+  db.promise().query(sqlQuery)
+  .then( ([rows, fields]) => {
+    console.log('\n')
+    console.table(rows)
+  })
+  .catch(console.log)
+}
+
 module.exports = {
   getDepartments,
   createDepartment,
@@ -167,5 +203,7 @@ module.exports = {
   viewDepartmentBudget,
   deleteDepartment,
   deleteRole,
-  deleteEmployee
+  deleteEmployee,
+  displayDepartmentEmployees,
+  displayManagerEmployees
 };

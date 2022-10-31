@@ -1,7 +1,7 @@
-const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, viewDepartmentBudget, deleteDepartment, deleteRole, deleteEmployee } = require('./menuFunctions')
+const { getDepartments, createDepartment, getRoles, createRole, getEmployees, createEmployee, updateEmployeeRole, viewDepartmentBudget, deleteDepartment, deleteRole, deleteEmployee, displayDepartmentEmployees, displayManagerEmployees } = require('./menuFunctions')
 
 const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
-  const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle, departmentToDelete, confirmDeleteDepartment, roleToDelete, confirmDeleteRole, employeeToDelete, confirmDeleteEmployee } = answers
+  const { menuOption, departmentName, roleTitle, roleSalary, roleDepartment, employeeFirstName, employeeLastName, employeeRole, employeeManager, employeeToUpdate, employeeNewRole, departmentBudgetTitle, departmentToDelete, confirmDeleteDepartment, roleToDelete, confirmDeleteRole, employeeToDelete, confirmDeleteEmployee, departmentOfEmployees, managerOfEmployees } = answers
   switch (menuOption) {
     case 'View departments':
       getDepartments()
@@ -47,7 +47,6 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
         const [tempFirstName, tempLastName] = employeeManager.split(' ')
         const filteredManager = allManagers[0].filter(individualRow => individualRow.first_name === tempFirstName && individualRow.last_name === tempLastName)
         managerId = filteredManager[0].id
-
       }
      createEmployee(employeeFirstName, employeeLastName, roleId, managerId)
      console.log('\n')
@@ -98,6 +97,19 @@ const handleAnswers = (answers, allDepartments, allManagers, allRoles) => {
       }
       console.log('\n')
       console.log(`${employeeToDelete.split('.')[1]} has been deleted from employees.`)
+      break;
+
+    case 'View employees by department':
+      const filteredDepartmentOfEmployees = allDepartments[0].filter(individualRow => individualRow.title === departmentOfEmployees)
+      const departmentOfEmployeesId = filteredDepartmentOfEmployees[0].id
+      displayDepartmentEmployees(departmentOfEmployeesId)
+      break;
+
+    case 'View employees by manager':
+      const [tempFirstName, tempLastName] = managerOfEmployees.split(' ')
+      const filteredManagerOfEmployees = allManagers[0].filter(individualRow => individualRow.first_name === tempFirstName && individualRow.last_name === tempLastName)
+      const filteredManagerOfEmployeesId = filteredManagerOfEmployees[0].id
+      displayManagerEmployees(filteredManagerOfEmployeesId)
       break;
     
     case 'Exit':
